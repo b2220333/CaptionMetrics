@@ -18,11 +18,15 @@ class Meteor:
         self.meteor_cmd = ['java', '-jar', '-Xmx2G', METEOR_JAR, \
                 '-', '-', '-stdio', '-l', 'en', '-norm']
         # print(os.path.dirname(os.path.abspath(__file__)))
-        self.meteor_p = subprocess.Popen(self.meteor_cmd, \
-                cwd=os.path.dirname(os.path.abspath(__file__)), \
-                stdin=subprocess.PIPE, \
-                stdout=subprocess.PIPE, \
-                stderr=subprocess.PIPE)
+        self.meteor_p = subprocess.Popen(self.meteor_cmd,
+                cwd=os.path.dirname(os.path.abspath(__file__)),
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                #若沒有加此列就會出現TypeError: a bytes-like object is required, not str錯誤
+                universal_newlines=True,
+                restore_signals=True
+                )
         # Used to guarantee thread safety
         self.lock = threading.Lock()
 
@@ -53,6 +57,8 @@ class Meteor:
         # SCORE ||| reference 1 words ||| reference n words ||| hypothesis words
         hypothesis_str = hypothesis_str.replace('|||', '').replace('  ', ' ')
         score_line = ' ||| '.join(('SCORE', ' ||| '.join(reference_list), hypothesis_str))
+        #score_line = bytes(score_line, encoding="utf-8")
+        #self.meteor_p.stdin.write('{}\n'.format(score_line))
         self.meteor_p.stdin.write('{}\n'.format(score_line))
         return self.meteor_p.stdout.readline().strip()
 

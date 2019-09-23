@@ -6,8 +6,7 @@
 # Creation Date: Sun Feb  8 14:16:54 2015
 #
 # Authors: Ramakrishna Vedantam <vrama91@vt.edu> and Tsung-Yi Lin <tl483@cornell.edu>
-
-from cider_scorer import CiderScorer
+from sam_caption_metrics.pycocoevalcap.cider.cider_scorer import CiderScorer
 import pdb
 
 class Cider:
